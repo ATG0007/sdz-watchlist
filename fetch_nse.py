@@ -65,7 +65,7 @@ def main():
     df.to_csv(OUT, index=False, compression="gzip")
     with open("data/LATEST.txt", "w") as fh:
         fh.write(f"{last}\n{n_sym} symbols\n{len(df)} rows\n"
-                 f"fetched {pd.Timestamp.now("UTC"):%Y-%m-%d %H:%M} UTC\n")
+                 f"fetched {pd.Timestamp.now('UTC'):%Y-%m-%d %H:%M} UTC\n")
     print(f"wrote {OUT} ({os.path.getsize(OUT)/1e6:.1f} MB)")
 
 
