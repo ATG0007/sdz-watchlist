@@ -1,0 +1,41 @@
+name: Fetch NSE delivery data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "45 12 * * 1-5"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-delivery
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install pandas requests
+
+      - name: Fetch delivery data
+        run: python fetch_delivery.py --start 2023-09-01 --universe universe.txt
+
+      - name: Commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/nse_delivery.csv.gz
+          if git diff --staged --quiet; then
+            echo "no change"
+          else
+            git commit -m "delivery data $(date -u +%Y-%m-%d)"
+            git push
+          fi
