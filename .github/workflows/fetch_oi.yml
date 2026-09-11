@@ -1,0 +1,43 @@
+
+name: Fetch NSE open interest
+ 
+on:
+  workflow_dispatch:
+  schedule:
+    # 18:30 IST Mon-Fri
+    - cron: "0 13 * * 1-5"
+ 
+permissions:
+  contents: write
+ 
+concurrency:
+  group: fetch-oi
+  cancel-in-progress: false
+ 
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+ 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+ 
+      - run: pip install pandas requests
+ 
+      - name: Fetch open interest
+        run: python fetch_oi.py --start 2023-09-01 --universe universe.txt
+ 
+      - name: Commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/nse_oi.csv.gz
+          if git diff --staged --quiet; then
+            echo "no change"
+          else
+            git commit -m "open interest $(date -u +%Y-%m-%d)"
+            git push
+          fi
