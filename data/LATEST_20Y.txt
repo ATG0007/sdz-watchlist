@@ -1,0 +1,6 @@
+2006-09-11 -> 2026-09-11
+501 symbols
+1731304 rows
+median history 19.4 years
+4 shards under data/hist/
+fetched 2026-09-11 10:11 UTC
