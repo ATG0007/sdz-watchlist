@@ -1,4 +1,4 @@
 2026-10-12
 183 symbols
 134487 rows
-fetched 2026-10-12 20:00 UTC
+fetched 2026-10-12 20:15 UTC
